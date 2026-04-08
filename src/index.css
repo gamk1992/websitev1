@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --color-khaki: #C3B091;
+  --color-beige: #F5F5DC;
+  --color-matte-black: #000000;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-matte-black font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-khaki {
+    @apply bg-khaki text-matte-black px-6 py-2 rounded-full font-semibold transition-all hover:opacity-90 active:scale-95;
+  }
+  
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-8 tracking-tight;
+  }
+  
+  .card {
+    @apply bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-shadow hover:shadow-md;
+  }
+}
