@@ -4,14 +4,16 @@ import { Navbar, Footer } from '../App';
 import { Coffee, CheckCircle2, Users, MapPin, Phone, Mail } from 'lucide-react';
 
 const CLIENTS = [
-  "Bank negara malaysia (Sasana Kijang)",
-  "Dell Malaysia",
+  "Bank Negara Malaysia (Sasana Kijang)",
+  "Dell Malaysia (Cyberjaya)",
+  "Kumpulan Wang Persaraan (KWAP)",
+  "RHB Bank",
   "Heitech Padu Berhad",
-  "RHB BANK",
-  "Universities",
-  "Mosques",
-  "Private Events",
-  "Private Weddings"
+  "Astro Arena",
+  "Pesta Kopi 2025",
+  "Little Tots",
+  "Skatescape",
+  "Celcomdigi (USJ & PJ)"
 ];
 
 const CateringPage = ({ onLoginClick }: { onLoginClick: () => void }) => {
