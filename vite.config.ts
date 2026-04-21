@@ -11,23 +11,14 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
-    build: {
-      rollupOptions: {
-        input: {
-          // Main React App
-          main: path.resolve(__dirname, 'index.html'),
-          // Your Partner Portal Pages
-          login: path.resolve(__dirname, 'partner/login.html'),
-          calculator: path.resolve(__dirname, 'partner/calculator.html'),
-        },
-      },
-    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
     },
     server: {
+      // HMR is disabled in AI Studio via DISABLE_HMR env var.
+      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
   };
