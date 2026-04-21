@@ -162,7 +162,7 @@ const Licensing = () => (<section className="py-24 px-6 grid md:grid-cols-2 gap-
 const Footer = () => (<footer className="py-12 border-t text-center px-6 text-sm text-gray-500">© 2026 Monti Keopi. All rights reserved. Made with energy.</footer>);
 
 // --- MAIN APP COMPONENT ---
-export default function App;
+export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
