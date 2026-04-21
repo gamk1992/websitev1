@@ -9,15 +9,11 @@ import LicensingFormPage from './pages/LicensingFormPage';
 import ScrollToTop from './components/ScrollToTop';
 import { User, Lock } from 'lucide-react';
 
-export const Logo = ({ className = "" }: { className?: string }) => (
-  <div className={`flex items-center ${className}`}>
-    <span className="text-2xl font-bold tracking-tighter text-matte-black uppercase">
-      monti keopi
     </span>
   </div>
 );
 
-export const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
+export { Logo, Navbar, Footer } from './components/Layout';
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -40,7 +36,3 @@ export const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
     </nav>
   );
 };
-
-export const Footer = () => (
-  <footer className="py-12 border-t text-center px-6 text-sm text-gray-500">
-    © 2026 Monti Keopi. All rights rese
