@@ -17,7 +17,7 @@ import {
   ChevronRight,
   MessageCircle
 } from 'lucide-react';
-import { Navbar, Footer } from '../App';
+import { Navbar, Footer } from '../components/Layout';
 
 const LicensingPage = ({ onLoginClick }: { onLoginClick: () => void }) => {
   const [showStickyCTA, setShowStickyCTA] = useState(false);
