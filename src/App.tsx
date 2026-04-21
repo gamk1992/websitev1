@@ -1,35 +1,58 @@
-const handleSignIn = async () => {
-    setError('');
-    if (role === 'Team') {
-      try {
-        const response = await fetch('https://monti-keopi-backend.marketing-montikeopi.workers.dev/api/partner/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username, password }) // Using username field as email
-        });
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
+import MenuPage from './pages/MenuPage';
+import StoresPage from './pages/StoresPage';
+import CateringPage from './pages/CateringPage';
+import LicensingPage from './pages/LicensingPage';
+import LicensingFormPage from './pages/LicensingFormPage';
+import ScrollToTop from './components/ScrollToTop';
+import { 
+  User, 
+  Lock, 
+  ArrowLeft, 
+  Instagram, 
+  Facebook, 
+  Music2
+} from 'lucide-react';
 
-        const data = await response.json();
+// --- Components ---
+export const Logo = ({ className = "" }: { className?: string }) => (
+  <div className={`flex items-center ${className}`}>
+    <span className="text-2xl font-bold tracking-tighter text-matte-black uppercase">
+      monti keopi
+    </span>
+  </div>
+);
 
-        if (data.success) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('role', data.role);
-          onLoginSuccess();
-          onClose();
-          navigate('/special-portal');
-        } else {
-          setError(data.error || 'Invalid credentials.');
-        }
-      } catch (err) {
-        setError('Connection to backend failed.');
-      }
-    } else {
-      setError('Chingu access on our way.');
-    }
-  };
-// ... (The code you shared ends here)
-    }
-  }; 
-    const [cups, setCups] = useState(90);
+export const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <Link to="/"><Logo className="scale-90 md:scale-100 origin-left" /></Link>
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="/#about" className="hover:text-khaki transition-colors">Our Story</a>
+          <Link to="/stores" className="hover:text-khaki transition-colors">Locations</Link>
+          <Link to="/menu" className="hover:text-khaki transition-colors">Menu</Link>
+          <Link to="/catering" className="hover:text-khaki transition-colors">Events</Link>
+          <Link to="/licensing" className="hover:text-khaki transition-colors">Licensing</Link>
+        </div>
+        <button onClick={onLoginClick} className="p-2.5 rounded-full border border-beige text-matte-black hover:bg-beige transition-all"><User className="w-5 h-5" /></button>
+      </div>
+    </nav>
+  );
+};
+
+// --- Special Portal (Calculator) ---
+const SpecialPortal = () => {
+  const [cups, setCups] = useState(90);
   const [price, setPrice] = useState(15);
   const [rent, setRent] = useState(2500);
   const [labor, setLabor] = useState(3500);
@@ -37,59 +60,117 @@ const handleSignIn = async () => {
   const days = 26;
   const cogsPct = 0.35;
   const royaltyPct = 0.05;
-  const setupCost = 85000;
-
-  const monthlyRev = cups * price * days;
-  const totalCOGS = monthlyRev * cogsPct;
-  const totalRoyalty = monthlyRev * royaltyPct;
-  const monthlyProfit = monthlyRev - (rent + labor + totalCOGS + totalRoyalty);
-  const margin = monthlyRev > 0 ? (monthlyProfit / monthlyRev) * 100 : 0;
-  const beCups = Math.ceil((rent + labor) / (price * (1 - cogsPct - royaltyPct) * days));
-  const payback = monthlyProfit > 0 ? (setupCost / monthlyProfit).toFixed(1) : "∞";
+  const monthlyProfit = (cups * price * days) - (rent + labor + (cups * price * days * (cogsPct + royaltyPct)));
 
   return (
     <div className="min-h-screen bg-stone-50 p-8 pt-32">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-12 border-b border-stone-200 pb-6">
-          <h1 className="text-3xl font-bold text-matte-black uppercase tracking-tighter">
-            Monti Partner <span className="text-khaki">Dashboard</span>
-          </h1>
-          <p className="text-xs uppercase tracking-widest opacity-50 mt-2">6th Year Intelligence</p>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
-              <h2 className="text-xs font-bold uppercase mb-6 opacity-40 tracking-widest">Revenue Drivers</h2>
-              <div className="space-y-8">
-                <div>
-                  <div className="flex justify-between mb-4 text-sm font-medium">
-                    <span>Daily Volume</span>
-                    <span className="text-khaki font-bold">{cups} cups</span>
-                  </div>
-                  <input type="range" min="30" max="300" value={cups} onChange={(e) => setCups(parseInt(e.target.value))} className="w-full accent-khaki cursor-pointer" />
-                </div>
-                <div>
-                  <div className="flex justify-between mb-4 text-sm font-medium">
-                    <span>Price (RM)</span>
-                    <span className="text-khaki font-bold">RM {price.toFixed(2)}</span>
-                  </div>
-                  <input type="range" min="8" max="25" step="0.5" value={price} onChange={(e) => setPrice(parseFloat(e.target.value))} className="w-full accent-khaki cursor-pointer" />
-                </div>
-              </div>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 serif italic text-oak">Partner Simulation Tool</h1>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white p-6 rounded-3xl shadow-sm space-y-6">
+            <div>
+              <label className="block text-sm font-bold mb-2">Daily Cups: {cups}</label>
+              <input type="range" min="30" max="300" value={cups} onChange={(e) => setCups(parseInt(e.target.value))} className="w-full accent-khaki" />
+            </div>
+            <div>
+              <label className="block text-sm font-bold mb-2">Price per Cup: RM{price}</label>
+              <input type="range" min="8" max="25" value={price} onChange={(e) => setPrice(parseInt(e.target.value))} className="w-full accent-khaki" />
             </div>
           </div>
-
-          <div className="lg:col-span-7 space-y-6">
-            <div className="bg-matte-black text-white p-8 rounded-[2.5rem]">
-              <p className="text-[10px] uppercase tracking-widest opacity-60 mb-2">Net Monthly Profit</p>
-              <h3 className={`text-5xl font-bold ${monthlyProfit < 0 ? 'text-red-400' : 'text-khaki'}`}>
-                RM {Math.round(monthlyProfit).toLocaleString()}
-              </h3>
-            </div>
+          <div className="bg-matte-black text-white p-8 rounded-3xl flex flex-col justify-center">
+            <p className="text-xs uppercase opacity-60">Est. Monthly Profit</p>
+            <h2 className="text-5xl font-bold text-khaki">RM {Math.round(monthlyProfit).toLocaleString()}</h2>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+// --- Login Logic ---
+const LoginPortal = ({ onClose, onLoginSuccess }: { onClose: () => void; onLoginSuccess: () => void }) => {
+  const [role, setRole] = useState<'Staff' | 'Partner'>('Staff');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignIn = async () => {
+    setError('');
+    try {
+      const response = await fetch('https://monti-keopi-backend.marketing-montikeopi.workers.dev/api/partner/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        onLoginSuccess();
+        onClose();
+        navigate('/special-portal');
+      } else {
+        setError('Invalid credentials.');
+      }
+    } catch (err) {
+      setError('Server connection failed.');
+    }
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-white">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-12"><Logo className="justify-center scale-125 mb-6" /><h2 className="text-3xl font-bold">B2B Secure Portal</h2></div>
+        <div className="space-y-4">
+          <input type="text" placeholder="Email" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-khaki" />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-khaki" />
+          <div className="flex p-1 bg-gray-100 rounded-xl">
+            {(['Staff', 'Partner'] as const).map((r) => (
+              <button key={r} onClick={() => setRole(r)} className={`flex-1 py-2 text-sm font-semibold rounded-lg ${role === r ? 'bg-white shadow-sm' : 'text-gray-500'}`}>{r}</button>
+            ))}
+          </div>
+          {error && <p className="text-red-500 text-center text-xs">{error}</p>}
+          <button onClick={handleSignIn} className="w-full btn-khaki py-4">Sign In</button>
+          <button onClick={onClose} className="w-full text-gray-400 text-sm mt-4">Back to Home</button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Landing Page ---
+const LandingPage = ({ onLoginClick }: { onLoginClick: () => void }) => (
+  <><Navbar onLoginClick={onLoginClick} /><main><Hero /><About /><StoreLocator /><Licensing /></main><Footer /></>
+);
+
+const Hero = () => (<section className="min-h-screen flex items-center px-6 pt-20"><div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center"><div><h1 className="text-6xl font-bold mb-6">Your Everyday Coffee, <span className="text-khaki">High Energy</span></h1><button className="btn-khaki">Order Now</button></div><img src="/event-astro.jpg" className="rounded-3xl rotate-3 shadow-xl" /></div></section>);
+const About = () => (<section id="about" className="py-24 bg-gray-50 px-6"><div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12"><img src="/monti-TNBDS.jpg" className="rounded-3xl" /><div><h2 className="text-4xl font-bold mb-6 italic">Our Story</h2><p className="text-lg text-gray-600">Founded in 2020, Monti Keopi emerged to redefine the coffee experience.</p></div></div></section>);
+const StoreLocator = () => (<section className="py-24 text-center px-6"><div className="bg-beige p-20 rounded-[3rem] max-w-4xl mx-auto"><h2 className="text-4xl font-bold mb-8">Find Monti Near You</h2><Link to="/stores" className="btn-khaki">View All Locations</Link></div></section>);
+const Licensing = () => (<section className="py-24 px-6 grid md:grid-cols-2 gap-8 max-w-7xl mx-auto"><div className="bg-stone-100 p-12 rounded-[3rem]"><h2>Start Your Own Monti</h2><Link to="/licensing" className="btn-khaki mt-6 inline-block">Explore Licensing</Link></div><div className="bg-matte-black text-white p-12 rounded-[3rem]"><h2>Coffee For Your Events</h2><Link to="/catering" className="btn-khaki mt-6 inline-block">Book Catering</Link></div></section>);
+const Footer = () => (<footer className="py-12 border-t text-center px-6">© 2026 Monti Keopi. All rights reserved.</footer>);
+
+// --- Main App ---
+export default function App() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  return (
+    <Router>
+      <ScrollToTop />
+      <AnimatePresence mode="wait">
+        {isLoginOpen ? (
+          <LoginPortal onClose={() => setIsLoginOpen(false)} onLoginSuccess={() => setIsAuthenticated(true)} />
+        ) : (
+          <Routes>
+            <Route path="/" element={<LandingPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/menu" element={<MenuPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/stores" element={<StoresPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/catering" element={<CateringPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/licensing" element={<LicensingPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/licensing/apply" element={<LicensingFormPage onLoginClick={() => setIsLoginOpen(true)} />} />
+            <Route path="/special-portal" element={isAuthenticated ? <SpecialPortal /> : <Navigate to="/" />} />
+          </Routes>
+        )}
+      </AnimatePresence>
+    </Router>
+  );
+}
