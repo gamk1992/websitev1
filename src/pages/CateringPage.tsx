@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Navbar, Footer } from '../App';
+import { Navbar, Footer } from '../components/Layout';
 import { Coffee, CheckCircle2, Users, MapPin, Phone, Mail } from 'lucide-react';
 
 const CLIENTS = [
