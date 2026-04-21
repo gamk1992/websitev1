@@ -230,11 +230,30 @@ export const Footer = () => (
   </footer>
 );
 
-const LoginPortal = ({ onClose }: { onClose: () => void; key?: string }) => {
-  const [role, setRole] = useState<'Staff' | 'Partner'>('Staff');
+const LoginPortal = ({ onClose, onLoginSuccess }: { onClose: () => void; onLoginSuccess: () => void; key?: string }) => {
+  const [role, setRole] = useState<'Team' | 'Chingu'>('Team');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    setError('');
+    if (role === 'Team') {
+      if (username.trim() === 'admin' && password === 'MKOS2026!') {
+        onLoginSuccess();
+        onClose();
+        navigate('/special-portal');
+      } else {
+        setError('Invalid credentials for Special Portal.');
+      }
+    } else {
+      setError('Chingu access on our way.');
+    }
+  };
 
   return (
-    <motion.div 
+   <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -250,7 +269,7 @@ const LoginPortal = ({ onClose }: { onClose: () => void; key?: string }) => {
           <div className="flex justify-center mb-6">
             <Logo className="scale-125" />
           </div>
-          <h2 className="text-3xl font-bold mb-2">B2B Secure Portal</h2>
+          <h2 className="text-3xl font-bold mb-2">Welcome to Monti Special Portal</h2>
           <p className="text-gray-500">Welcome back! Please sign in to continue.</p>
         </div>
 
@@ -261,6 +280,8 @@ const LoginPortal = ({ onClose }: { onClose: () => void; key?: string }) => {
               <input 
                 type="text" 
                 placeholder="Username" 
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-khaki focus:ring-2 focus:ring-khaki/20 outline-none transition-all"
               />
             </div>
@@ -269,16 +290,19 @@ const LoginPortal = ({ onClose }: { onClose: () => void; key?: string }) => {
               <input 
                 type="password" 
                 placeholder="Password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
                 className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-khaki focus:ring-2 focus:ring-khaki/20 outline-none transition-all"
               />
             </div>
           </div>
 
           <div className="flex p-1 bg-gray-100 rounded-xl">
-            {(['Staff', 'Partner'] as const).map((r) => (
+            {(['Team', 'Chingu'] as const).map((r) => (
               <button
                 key={r}
-                onClick={() => setRole(r)}
+                onClick={() => { setRole(r); setError(''); }}
                 className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${role === r ? 'bg-white shadow-sm text-matte-black' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 {r}
@@ -286,7 +310,9 @@ const LoginPortal = ({ onClose }: { onClose: () => void; key?: string }) => {
             ))}
           </div>
 
-          <button className="w-full btn-khaki py-4 text-lg">
+          {error && <p className="text-red-500 text-xs text-center">{error}</p>}
+
+          <button onClick={handleSignIn} className="w-full btn-khaki py-4 text-lg">
             Sign In
           </button>
         </div>
@@ -320,6 +346,7 @@ const LandingPage = ({ onLoginClick }: { onLoginClick: () => void }) => (
 
 export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Prevent scroll when login is open
   useEffect(() => {
@@ -336,7 +363,11 @@ export default function App() {
       <div className="relative">
         <AnimatePresence mode="wait">
           {isLoginOpen ? (
-            <LoginPortal key="login" onClose={() => setIsLoginOpen(false)} />
+            <LoginPortal 
+              key="login" 
+              onClose={() => setIsLoginOpen(false)} 
+              onLoginSuccess={() => setIsAuthenticated(true)}
+            />
           ) : (
             <Routes>
               <Route path="/" element={<LandingPage onLoginClick={() => setIsLoginOpen(true)} />} />
@@ -345,10 +376,15 @@ export default function App() {
               <Route path="/catering" element={<CateringPage onLoginClick={() => setIsLoginOpen(true)} />} />
               <Route path="/licensing" element={<LicensingPage onLoginClick={() => setIsLoginOpen(true)} />} />
               <Route path="/licensing/apply" element={<LicensingFormPage onLoginClick={() => setIsLoginOpen(true)} />} />
+              <Route 
+                path="/special-portal" 
+                element={isAuthenticated ? <SpecialPortal onLoginClick={() => setIsLoginOpen(true)} /> : <LandingPage onLoginClick={() => setIsLoginOpen(true)} />} 
+              />
             </Routes>
           )}
         </AnimatePresence>
       </div>
     </Router>
   );
+}
 }
