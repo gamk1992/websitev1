@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { MapPin, ChevronRight } from 'lucide-react';
-import { Navbar, Footer } from '../App';
+import { Navbar, Footer } from '../components/Layout';
 
 const STORES_LIST = [
   { 
