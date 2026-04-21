@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowLeft
 } from 'lucide-react';
-import { Navbar, Footer } from '../App';
+import { Navbar, Footer } from '../components/Layout';
 
 const LicensingFormPage = ({ onLoginClick }: { onLoginClick: () => void }) => {
   return (
