@@ -159,7 +159,7 @@ const Hero = () => (<section className="min-h-screen flex items-center px-6 pt-2
 const About = () => (<section id="about" className="py-24 bg-gray-50 px-6"><div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-12"><img src="/monti-TNBDS.jpg" className="rounded-3xl shadow-lg" /><div><h2 className="text-4xl font-bold mb-6 italic">Our Story</h2><p className="text-lg text-gray-600">Founded in 2020, Monti Keopi emerged to redefine the coffee experience. "Keopi dulu, as always."</p></div></div></section>);
 const StoreLocator = () => (<section className="py-24 text-center px-6"><div className="bg-beige p-20 rounded-[3rem] max-w-4xl mx-auto"><h2 className="text-4xl font-bold mb-8 uppercase tracking-tighter">Find Monti Near You</h2><Link to="/stores" className="btn-khaki">View All Locations</Link></div></section>);
 const Licensing = () => (<section className="py-24 px-6 grid md:grid-cols-2 gap-8 max-w-7xl mx-auto"><div className="bg-stone-100 p-12 rounded-[3rem]"><h2>Start Your Own Monti</h2><Link to="/licensing" className="btn-khaki mt-6 inline-block">Explore Licensing</Link></div><div className="bg-matte-black text-white p-12 rounded-[3rem]"><h2>Coffee For Your Events</h2><Link to="/catering" className="btn-khaki mt-6 inline-block">Book Catering</Link></div></section>);
-const Footer = () => (<footer className="py-12 border-t text-center px-6 text-sm text-gray-500">© 2026 Monti Keopi. All rights reserved. Made with energy.</footer>);
+export const Footer = () => (<footer className="py-12 border-t text-center px-6 text-sm text-gray-500">© 2026 Monti Keopi. All rights reserved. Made with high energy.</footer>);
 
 // --- MAIN APP COMPONENT ---
 export default function App() {
