@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Navbar, Footer } from '../App';
+import { Navbar, Footer } from '../components/Layout';
 
 interface Product {
   name: string;
